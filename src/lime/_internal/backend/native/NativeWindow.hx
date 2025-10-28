@@ -22,6 +22,7 @@ import lime.system.JNI;
 import lime.system.System;
 import lime.ui.MouseCursor;
 import lime.ui.Window;
+import lime.ui.WindowVSyncMode;
 import lime.utils.UInt8Array;
 
 #if !lime_debug
@@ -45,6 +46,7 @@ class NativeWindow
 	private var cursor:MouseCursor;
 	private var displayMode:DisplayMode;
 	private var frameRate:Float;
+	private var vsyncMode:WindowVSyncMode;
 	private var mouseLock:Bool;
 	private var parent:Window;
 	private var useHardware:Bool;
@@ -101,7 +103,16 @@ class NativeWindow
 		if (contextAttributes.depth) flags |= cast WindowFlags.WINDOW_FLAG_DEPTH_BUFFER;
 		if (contextAttributes.hardware) flags |= cast WindowFlags.WINDOW_FLAG_HARDWARE;
 		if (contextAttributes.stencil) flags |= cast WindowFlags.WINDOW_FLAG_STENCIL_BUFFER;
-		if (contextAttributes.vsync) flags |= cast WindowFlags.WINDOW_FLAG_VSYNC;
+
+		if (contextAttributes.vsync)
+		{
+			flags |= cast WindowFlags.WINDOW_FLAG_VSYNC;
+			vsyncMode = VSYNC;
+		}
+		else
+		{
+			vsyncMode = NONE;
+		}
 
 		var width = Reflect.hasField(attributes, "width") ? attributes.width : #if desktop 800 #else 0 #end;
 		var height = Reflect.hasField(attributes, "height") ? attributes.height : #if desktop 600 #else 0 #end;
@@ -292,6 +303,11 @@ class NativeWindow
 	{
 		return frameRate;
 	}
+
+	public function getVSyncMode():WindowVSyncMode
+	{
+		return vsyncMode;
+    }
 
 	public function getMouseLock():Bool
 	{
@@ -608,6 +624,54 @@ class NativeWindow
 		}
 
 		return frameRate = value;
+	}
+
+	public function setVSyncMode(value:WindowVSyncMode):WindowVSyncMode
+	{
+		if (handle != null)
+		{
+			#if (!macro && lime_cffi)
+			switch (value)
+			{
+				case NONE:
+					NativeCFFI.lime_window_set_vsync_mode(handle, 0);
+					vsyncMode = NONE;
+
+				case VSYNC:
+					var result:Bool = NativeCFFI.lime_window_set_vsync_mode(handle, 1);
+					if (result)
+					{
+						vsyncMode = VSYNC;
+					}
+					else
+					{
+						vsyncMode = NONE;
+					}
+
+				case ADAPTATIVE_VSYNC:
+					var result:Bool = NativeCFFI.lime_window_set_vsync_mode(handle, -1);
+					if (result)
+					{
+						vsyncMode = ADAPTATIVE_VSYNC;
+					}
+					else
+					{
+						// some systems do not support adaptative vsync so let's try regular vsync
+						result = NativeCFFI.lime_window_set_vsync_mode(handle, 1);
+						if (result)
+						{
+							vsyncMode = VSYNC;
+						}
+						else
+						{
+							vsyncMode = NONE;
+						}
+					}
+			}
+			#end
+		}
+
+		return this.vsyncMode;
 	}
 
 	public function setFullscreen(value:Bool):Bool

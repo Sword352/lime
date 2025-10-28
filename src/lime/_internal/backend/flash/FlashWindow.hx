@@ -29,6 +29,7 @@ import lime.system.Display;
 import lime.system.DisplayMode;
 import lime.system.System;
 import lime.ui.Window;
+import lime.ui.WindowVSyncMode;
 
 @:access(lime._internal.backend.flash.FlashApplication)
 @:access(lime.app.Application)
@@ -567,6 +568,11 @@ class FlashWindow
 		return frameRate;
 	}
 
+	public function getVSyncMode():WindowVSyncMode
+	{
+		return NONE;
+	}
+
 	public function getMouseLock():Bool
 	{
 		return false;
@@ -600,6 +606,11 @@ class FlashWindow
 		frameRate = value;
 		if (parent.stage != null) parent.stage.frameRate = value;
 		return value;
+	}
+
+	public function setVSyncMode(value:WindowVSyncMode):WindowVSyncMode
+	{
+		return NONE;
 	}
 
 	public function setFullscreen(value:Bool):Bool

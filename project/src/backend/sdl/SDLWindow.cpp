@@ -316,6 +316,12 @@ namespace lime {
 
 	}
 
+	bool SDLWindow::SetVSync(int mode) {
+
+		int result = SDL_GL_SetSwapInterval(mode);
+		return result == 0;
+
+	}
 
 	void SDLWindow::Alert (const char* message, const char* title) {
 

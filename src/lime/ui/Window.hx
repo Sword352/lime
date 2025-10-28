@@ -46,6 +46,14 @@ class Window
 	**/
 	public var frameRate(get, set):Float;
 
+	/**
+	 * The current VSync mode of the window.
+	 *
+	 * NOTE: some systems do not support adaptative vsync, in which case the VSYNC mode is picked instead.
+	 * Only supported on native platforms.
+	**/
+	public var vsyncMode(get, set):WindowVSyncMode;
+
 	public var fullscreen(get, set):Bool;
 	public var height(get, set):Int;
 	public var hidden(get, null):Bool;
@@ -568,6 +576,16 @@ class Window
 	@:noCompletion private inline function set_frameRate(value:Float):Float
 	{
 		return __backend.setFrameRate(value);
+	}
+
+	@:noCompletion private inline function get_vsyncMode():WindowVSyncMode
+	{
+		return __backend.getVSyncMode();
+	}
+
+	@:noCompletion private inline function set_vsyncMode(value:WindowVSyncMode):WindowVSyncMode
+	{
+		return __backend.setVSyncMode(value);
 	}
 
 	@:noCompletion private inline function get_fullscreen():Bool

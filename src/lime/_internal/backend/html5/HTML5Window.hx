@@ -34,6 +34,7 @@ import lime.ui.MouseCursor;
 import lime.ui.MouseWheelMode;
 import lime.ui.Touch;
 import lime.ui.Window;
+import lime.ui.WindowVSyncMode;
 
 @:access(lime._internal.backend.html5.HTML5Application)
 @:access(lime._internal.backend.html5.HTML5WebGL2RenderContext)
@@ -427,6 +428,11 @@ class HTML5Window
 		{
 			return 1000 / parent.application.__backend.framePeriod;
 		}
+	}
+
+	public function getVSyncMode():WindowVSyncMode
+	{
+		return NONE;
 	}
 
 	public function getMouseLock():Bool
@@ -1120,6 +1126,11 @@ class HTML5Window
 		}
 
 		return value;
+	}
+
+	public function setVSyncMode(value:WindowVSyncMode):WindowVSyncMode
+	{
+		return NONE;
 	}
 
 	public function setFullscreen(value:Bool):Bool

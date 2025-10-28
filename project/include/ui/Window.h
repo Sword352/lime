@@ -24,6 +24,7 @@ namespace lime {
 
 			virtual ~Window () {};
 
+			virtual bool SetVSync (int mode) = 0;
 			virtual void Alert (const char* message, const char* title) = 0;
 			virtual void Close () = 0;
 			virtual void ContextFlip () = 0;
